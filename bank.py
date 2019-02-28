@@ -3,6 +3,13 @@ import socket
 import select
 import sys
 
+balances={
+    "Alice":100,
+    "Bob":100,
+    "Carol":0,
+}
+
+
 class bank:
   def __init__(self):
     self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -35,7 +42,20 @@ class bank:
   #====================================================================
   def handleLocal(self,inString):
     self.sendBytes(bytes(inString, "utf-8"))
+    args=inString.split(" ")
+    if args[0] == "deposit":
+        try:
+            balances[args[1].title()]+=float(args[2])
+            print("$%d added to %s's account" % (float(args[2]),args[1].title()))
+        except (ValueError,IndexError,KeyError):
+            print("invalid amount entered")
+    elif args[0] == "balance":
+        try:
+            print(balances[args[1].title()])
+        except (KeyError, IndexError):
+            print("User does not exist")
     self.prompt() 
+
 
   #====================================================================
   # TO DO: Modify the following function to handle the atm request 
@@ -43,6 +63,7 @@ class bank:
   def handleRemote(self, inBytes):
     print("\nFrom ATM: ", inBytes.decode("utf-8") )
     self.sendBytes(inBytes)
+    self.handleLocal(inBytes)
     self.prompt() 
  
 
