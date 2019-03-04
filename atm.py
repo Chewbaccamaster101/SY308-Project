@@ -35,14 +35,28 @@ class atm:
   #====================================================================
   def handleLocal(self,inString):
     self.sendBytes(bytes(inString, "utf-8"))
+    args=inString.split(" ")
+    if args[0] == "begin-session":
+        activeCard=open("Inserted.card","r")
+
+        
+
+
+
+        pass
+    elif args[0] == "balance":
+        try:
+            print(balances[args[1].title()])
+        except (KeyError, IndexError):
+            print("User does not exist")
+    self.prompt() 
+
 
   #====================================================================
   # TO DO: Modify the following function to handle the bank's reply
   #====================================================================
   def handleRemote(self, inBytes):
     print("From Bank: ", inBytes.decode("utf-8") )
-    self.prompt() 
-
 
   def mainLoop(self):
     self.prompt()
