@@ -62,8 +62,12 @@ class bank:
   #====================================================================
   def handleRemote(self, inBytes):
     print("\nFrom ATM: ", inBytes.decode("utf-8") )
-    self.sendBytes(inBytes)
-    self.handleLocal(inBytes)
+    string=inBytes.decode("utf-8"))
+    args=string.split(" ")
+    if args[0].lower() == "withdraw":
+        pass
+    elif args[0],lower() == "balance": 
+        pass
     self.prompt() 
  
 
