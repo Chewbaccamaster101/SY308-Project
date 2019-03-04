@@ -3,12 +3,15 @@ import socket
 import select
 import sys
 
+nameDic = {"alice":"0000", "bob":"1111", "carol":"2222"}
+
 class atm:
   def __init__(self):
     self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     self.s.bind((config.local_ip, config.port_atm))
- 
+    self.name = ""
+
   def __del__(self):
     self.s.close()
 
@@ -26,8 +29,13 @@ class atm:
   # TO DO: Modify the following function to output prompt properly
   #====================================================================
   def prompt(self):
-    sys.stdout.write("ATM: ")
-    sys.stdout.flush()
+    if self.name == "":
+        sys.stdout.write("ATM: ")
+        sys.stdout.flush()
+    else:
+        sys.stdout.write("ATM (" + self.name + "):")
+        sys.stdout.flush()
+    
 
 
   #====================================================================
@@ -35,21 +43,31 @@ class atm:
   #====================================================================
   def handleLocal(self,inString):
     self.sendBytes(bytes(inString, "utf-8"))
-    args=inString.split(" ")
+    args=inString.lower().split(" ")
     if args[0] == "begin-session":
         activeCard=open("Inserted.card","r")
+        name = activeCard.readline().strip().lower()
+        if name in nameDic:
+            pin = nameDic[name]
+            print("Please Enter Your PIN: ")
+            enterpin = input()
+            if pin == enterpin:
+                self.name = name
+            else:
+                print("INVALID PIN")
+                pass
+        else:
+            print("INVALID CARD")
+            pass
+    if self.name != "":
+        if args[0] == "balance":
+            try:
+                print(balances[args[1].title()])
+            except (KeyError, IndexError):
+                print("User does not exist")
 
-        
-
-
-
-        pass
-    elif args[0] == "balance":
-        try:
-            print(balances[args[1].title()])
-        except (KeyError, IndexError):
-            print("User does not exist")
     self.prompt() 
+
 
 
   #====================================================================
