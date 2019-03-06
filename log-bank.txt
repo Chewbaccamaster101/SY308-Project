@@ -1,0 +1,8 @@
+BANK: 
+From ATM:  balance Carol
+BANK: 
+From ATM:  withdraw Carol 0
+BANK: 
+From ATM:  withdraw Carol 5
+BANK: 
+
