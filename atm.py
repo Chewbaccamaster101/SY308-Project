@@ -3,7 +3,7 @@ import socket
 import select
 import sys
 
-nameDic = {"alice":"0000", "bob":"1111", "carol":"2222"}
+nameDic = {"Alice":"0000", "Bob":"1111", "Carol":"2222"}
 
 class atm:
   def __init__(self):
@@ -43,12 +43,12 @@ class atm:
   # TO DO: Modify the following function to handle the console input
   #====================================================================
   def handleLocal(self,inString):
-    self.sendBytes(bytes(inString, "utf-8"))
-    args=inString.lower().split(" ")
-    if sessionFlag =="no session":
+    #self.sendBytes(bytes(inString, "utf-8"))
+    args=inString.split(" ")
+    if self.sessionFlag =="no session":
         if args[0] == "begin-session":
             activeCard=open("Inserted.card","r")
-            name = activeCard.readline().strip().lower()
+            name = activeCard.readline().strip().title()
             if name in nameDic:
                 pin = nameDic[name]
                 print("Please Enter Your PIN: ")
@@ -56,20 +56,32 @@ class atm:
                 if pin == enterpin:
                     self.sessionFlag ="in session"
                     self.name = name
+
                 else:
                     print("INVALID PIN")
                     self.sessionFlag="no session"
-                    pass
+
             else:
                 print("INVALID CARD")
                 self.sessionFlag="no session"
                 pass
-    if sessionFlag =="in session":
-        if self.name != "":
-            if args[0] == "balance"::
+    if self.sessionFlag =="in session":
+            if args[0] == "balance":
+                balanceQueryStr="balance %s" % (self.name)
+                self.sendBytes(bytes(balanceQueryStr,"utf-8"))
+            elif args[0] == "withdraw":
+                withdrawQueryStr="withdraw %s %s" %(self.name,args[1])
+                self.sendBytes(bytes(withdrawQueryStr,"utf-8"))
+            elif args[0] == "end-session":
+                self.sessionFlag="no session"
+                self.prompt()
+            else:
+                self.prompt()
+
+    else:
+        self.prompt()
 
 
-    self.prompt()
 
 
 
@@ -78,6 +90,10 @@ class atm:
   #====================================================================
   def handleRemote(self, inBytes):
     print("From Bank: ", inBytes.decode("utf-8") )
+    string=inBytes.decode("utf-8")
+    args=string.split(" ")
+    self.prompt()
+
 
   def mainLoop(self):
     self.prompt()
