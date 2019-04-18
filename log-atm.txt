@@ -1,0 +1,10 @@
+ATM: begin-session
+Please Enter Your PIN: 
+2222
+ATM (Carol):balance
+From Bank:  $0
+ATM (Carol):withdraw 0
+From Bank:  Invalid withdrawal
+ATM (Carol):withdraw 5
+From Bank:  Insufficient Balance
+ATM (Carol):

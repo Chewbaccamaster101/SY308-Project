@@ -1,0 +1,29 @@
+Design.doc
+
+First the user must start a session each of Router.py, Bank.py, and atm.py.
+The user will then copy the contents of a "user.card" into a file "inserted.card".
+The User will go into the atm.py session and enter the command "begin-session".
+begin-session will read the contents on the card and prompt for the user
+to confirm his/her identity with a four digit pin. The pins are as follows:
+Alice:0000
+Bob:1111
+Carol:2222
+
+The ATM will then grant access to the User's bank account. The User may now enter one of
+three commands. The withdraw command is the only command with a supporting argument.
+The "amt" will be the monetary amount(in digits) that the user wishes to withdraw.
+balance
+withdraw amt
+end-session
+
+typing "end-session" into the atm prompt will and the user's session, therefore
+causing them to "begin-session" again before any more actions may be taken.
+
+Our ATM machine adheres to the fail-safe default principle because no withdraws
+will be attainable if there is no connection with the bank machine. The bank machine
+holds the balance information.
+
+Our ATM machine also carries a least privilege mechanism. The user at the atm
+will not be able to even access the commands the atm has to offer unless they are signed
+into their account. The whole system changes accounts along with the user, so they may not effect others
+accounts.
