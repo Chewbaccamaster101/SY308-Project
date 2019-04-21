@@ -2,8 +2,14 @@ import config
 import socket
 import select
 import sys
+import security
 
 nameDic = {"Alice":"0000", "Bob":"1111", "Carol":"2222"}
+
+localStorage=open("ssATM.bin","rb")
+
+key=localStorage.readline().strip()
+
 
 class atm:
   def __init__(self):
@@ -17,7 +23,10 @@ class atm:
     self.s.close()
 
   def sendBytes(self, m):
-    self.s.sendto(m, (config.local_ip, config.port_router))
+    cipher=security.encrypt(m,key)
+    cipher=b"".join(cipher).decode("utf-8")
+    cipher=bytes(cipher,"utf-8")
+    self.s.sendto(cipher, (config.local_ip, config.port_router))
 
   def recvBytes(self):
       data, addr = self.s.recvfrom(config.buf_size)

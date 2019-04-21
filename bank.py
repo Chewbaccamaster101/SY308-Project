@@ -2,6 +2,11 @@ import config
 import socket
 import select
 import sys
+import security
+
+localStorage=open("ssATM.bin","rb")
+
+key=localStorage.readline(16)
 
 balances={
     "Alice":100,
