@@ -4,15 +4,18 @@ import select
 import sys
 import security
 
-localStorage=open("ssATM.bin","rb")
-
+localStorage=open("ssBank.bin","rb")
 key=localStorage.readline(16)
+localStorage.close()
 
-balances={
-    "Alice":100,
-    "Bob":100,
-    "Carol":0,
-}
+localStorage=open("ssBank.bin","r")
+localStorage.readline()
+balances={}
+for i in localStorage.readlines():
+    line=i.split(":")
+    balances[line[0]]=int(line[1].strip())
+
+print(balances)
 
 
 class bank:
@@ -25,11 +28,15 @@ class bank:
     self.s.close()
 
   def sendBytes(self, m):
+    cipher=security.encrypt(m,key)
+    cipher=b"mangos".join(cipher)
     self.s.sendto(m, (config.local_ip, config.port_router))
 
   def recvBytes(self):
       data, addr = self.s.recvfrom(config.buf_size)
       if addr[0] == config.local_ip and addr[1] == config.port_router:
+        mangos=data.split(b'mangos')
+        data=security.decrypt(mangos[0],mangos[1],mangos[2],key)
         return True, data
       else:
         return False, bytes(0)
