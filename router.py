@@ -3,7 +3,7 @@ import socket
 import select
 import sys
 
-class router: 
+class router:
 
   def __init__(self):
     self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -28,35 +28,34 @@ class router:
   #===============================================================
   def handleData(self, data, port):
     if port == config.port_atm:
-      print("Received from atm:", data.decode("utf-8"))
+      print("Received from atm:")#, data.decode("utf-8"))
       self.sendBytesToBank(data)
     else:
-      print("Received from bank:", data.decode("utf-8"))
+      print("Received from bank:")#, data.decode("utf-8"))
       self.sendBytesToATM(data)
 
-    
-  def mainLoop(self): 
+
+  def mainLoop(self):
     while True:
       l_socks = [sys.stdin, self.s]
-           
+
       # Get the list sockets which are readable
       r_socks, w_socks, e_socks = select.select(l_socks, [], [])
-           
+
       for s in r_socks:
         # Incoming data from the router
         if s == self.s:
           ip, port, data = self.recvBytes()
           if ip == config.local_ip:
-            self.handleData(data, port) # call handleRequest 
-                                 
+            self.handleData(data, port) # call handleRequest
+
         # User entered a message
         else:
           m = sys.stdin.readline().rstrip("\n")
-          if m == "quit": 
+          if m == "quit":
             return
-            
+
 
 if __name__ == "__main__":
   rt = router()
   rt.mainLoop()
-

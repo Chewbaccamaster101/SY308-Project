@@ -4,16 +4,16 @@ import select
 import sys
 import security
 
-nameDic = {"alice":"0000", "bob":"1111", "carol":"2222"}
-ss = open("ssatm.bin","rb")
-N = ss.readline().strip()
-d = ss.readline().strip()
-e = ss.readline().strip()
-ss.close()
-
 localStorage=open("ssATM.bin","rb")
-
 key=localStorage.readline(16)
+localStorage.close()
+
+localStorage=open("ssATM.bin","r")
+localStorage.readline()
+nameDic={}
+for i in localStorage.readlines():
+    line=i.split(":")
+    nameDic[line[0]]=line[1].strip()
 
 
 class atm:
@@ -29,14 +29,15 @@ class atm:
 
   def sendBytes(self, m):
     cipher=security.encrypt(m,key)
-    print(cipher)
-    cipher=b"".join(cipher)
-    print(cipher)
+    cipher=b"mangos".join(cipher)
     self.s.sendto(cipher, (config.local_ip, config.port_router))
 
   def recvBytes(self):
       data, addr = self.s.recvfrom(config.buf_size)
       if addr[0] == config.local_ip and addr[1] == config.port_router:
+        mangos=data.split(b'mangos')
+        print(mangos)
+        data=security.decrypt(mangos[0],mangos[1],mangos[2],key)
         return True, data
       else:
         return False, bytes(0)
