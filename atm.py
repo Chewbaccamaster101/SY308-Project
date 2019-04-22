@@ -2,6 +2,7 @@ import config
 import socket
 import select
 import sys
+import security
 
 nameDic = {"alice":"0000", "bob":"1111", "carol":"2222"}
 ss = open("ssatm.bin","rb")
@@ -9,6 +10,11 @@ N = ss.readline().strip()
 d = ss.readline().strip()
 e = ss.readline().strip()
 ss.close()
+
+localStorage=open("ssATM.bin","rb")
+
+key=localStorage.readline().strip()
+
 
 class atm:
   def __init__(self):
@@ -22,7 +28,10 @@ class atm:
     self.s.close()
 
   def sendBytes(self, m):
-    self.s.sendto(m, (config.local_ip, config.port_router))
+    cipher=security.encrypt(m,key)
+    cipher=b"".join(cipher).decode("utf-8")
+    cipher=bytes(cipher,"utf-8")
+    self.s.sendto(cipher, (config.local_ip, config.port_router))
 
   def recvBytes(self):
       data, addr = self.s.recvfrom(config.buf_size)
@@ -70,8 +79,12 @@ class atm:
                 balanceQueryStr="balance %s" % (self.name)
                 self.sendBytes(bytes(balanceQueryStr,"utf-8"))
             elif args[0] == "withdraw":
-                withdrawQueryStr="withdraw %s %s" %(self.name,args[1])
-                self.sendBytes(bytes(withdrawQueryStr,"utf-8"))
+                try:
+                    withdrawQueryStr="withdraw %s %s" %(self.name,args[1])
+                    self.sendBytes(bytes(withdrawQueryStr,"utf-8"))
+                except IndexError:
+                    print("PLEASE SPECIFY AMOUNT")
+                    self.prompt()
             elif args[0] == "end-session":
                 self.sessionFlag="no session"
                 self.prompt()
