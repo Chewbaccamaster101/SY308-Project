@@ -58,24 +58,19 @@ class atm:
   # TO DO: Modify the following function to handle the console input
   #====================================================================
   def handleLocal(self,inString):
-    #self.sendBytes(bytes(inString, "utf-8"))
-    args=inString.split(" ")
-    if self.sessionFlag =="no session":
-        if args[0] == "begin-session":
-            activeCard=open("Inserted.card","r")
-            name = activeCard.readline().strip().title()
-            if name in nameDic:
-                pin = nameDic[name]
-                print("Please Enter Your PIN: ")
-                enterpin = input()
-                if pin == enterpin:
-                    self.sessionFlag ="in session"
-                    self.name = name
-
-                else:
-                    print("INVALID PIN")
-                    self.sessionFlag="no session"
-
+    inString = int.from_bytes(msg, 'big')
+    inString = pow(inString, e, N)
+    self.sendBytes(inString)
+    args=inString.lower().split(" ")
+    if args[0] == "begin-session":
+        activeCard=open("Inserted.card","r")
+        name = activeCard.readline().strip().lower()
+        if name in nameDic:
+            pin = nameDic[name]
+            print("Please Enter Your PIN: ")
+            enterpin = input()
+            if pin == enterpin:
+                self.name = name
             else:
                 print("INVALID CARD")
                 self.sessionFlag="no session"
@@ -128,6 +123,8 @@ class atm:
         if s == self.s:
           ret, data = self.recvBytes()
           if ret == True:
+            D = pow(data, d, N)
+            data = D.to_bytes( (D.bit_length()//8) + 1, 'big')
             self.handleRemote(data) # call handleRemote
 
 

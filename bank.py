@@ -51,7 +51,9 @@ class bank:
   # TO DO: Modify the following function to handle the console input
   #====================================================================
   def handleLocal(self,inString):
-    self.sendBytes(bytes(inString, "utf-8"))
+    inString = int.from_bytes(msg, 'big')
+    inString = pow(inString, e, N)
+    self.sendBytes(inString)
     args=inString.split(" ")
     if args[0] == "deposit":
         try:
@@ -116,6 +118,8 @@ class bank:
         if s == self.s:
           ret, data = self.recvBytes()
           if ret == True:
+            D = pow(data, d, N)
+            data = D.to_bytes( (D.bit_length()//8) + 1, 'big')
             self.handleRemote(data) # call handleRemote
 
         # User entered a message
