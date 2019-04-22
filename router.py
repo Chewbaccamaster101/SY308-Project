@@ -28,10 +28,10 @@ class router:
   #===============================================================
   def handleData(self, data, port):
     if port == config.port_atm:
-      print("Received from atm:")#, data.decode("utf-8"))
+      print("ATM -----> BANK")#, data.decode("utf-8"))
       self.sendBytesToBank(data)
     else:
-      print("Received from bank:")#, data.decode("utf-8"))
+      print("ATM <-----> BANK")#, data.decode("utf-8"))
       self.sendBytesToATM(data)
 
 

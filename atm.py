@@ -36,7 +36,6 @@ class atm:
       data, addr = self.s.recvfrom(config.buf_size)
       if addr[0] == config.local_ip and addr[1] == config.port_router:
         mangos=data.split(b'mangos')
-        print(mangos)
         data=security.decrypt(mangos[0],mangos[1],mangos[2],key)
         return True, data
       else:

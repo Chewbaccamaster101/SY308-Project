@@ -15,9 +15,6 @@ for i in localStorage.readlines():
     line=i.split(":")
     balances[line[0]]=int(line[1].strip())
 
-print(balances)
-
-
 class bank:
   def __init__(self):
     self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -28,9 +25,10 @@ class bank:
     self.s.close()
 
   def sendBytes(self, m):
+    print(m)
     cipher=security.encrypt(m,key)
     cipher=b"mangos".join(cipher)
-    self.s.sendto(m, (config.local_ip, config.port_router))
+    self.s.sendto(cipher, (config.local_ip, config.port_router))
 
   def recvBytes(self):
       data, addr = self.s.recvfrom(config.buf_size)
