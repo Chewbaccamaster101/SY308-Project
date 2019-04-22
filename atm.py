@@ -13,7 +13,7 @@ ss.close()
 
 localStorage=open("ssATM.bin","rb")
 
-key=localStorage.readline().strip()
+key=localStorage.readline(16)
 
 
 class atm:
@@ -29,7 +29,9 @@ class atm:
 
   def sendBytes(self, m):
     cipher=security.encrypt(m,key)
+    print(cipher)
     cipher=b"".join(cipher)
+    print(cipher)
     self.s.sendto(cipher, (config.local_ip, config.port_router))
 
   def recvBytes(self):
