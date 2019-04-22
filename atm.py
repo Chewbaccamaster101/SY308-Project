@@ -24,8 +24,7 @@ class atm:
 
   def sendBytes(self, m):
     cipher=security.encrypt(m,key)
-    cipher=b"".join(cipher).decode("utf-8")
-    cipher=bytes(cipher,"utf-8")
+    cipher=b"".join(cipher)
     self.s.sendto(cipher, (config.local_ip, config.port_router))
 
   def recvBytes(self):
